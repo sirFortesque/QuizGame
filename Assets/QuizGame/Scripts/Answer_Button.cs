@@ -17,11 +17,11 @@ public class Answer_Button : MonoBehaviour
 	public void SetUp(Answer_Data data)
 	{
 		answerData = data;
-		answerText.text = answerData.answerText;
+		answerText.text = answerData._answerText;
 	}
 
 	public void HandleClick()
 	{
-		gameController.AnswerButtonClicked(answerData.isCorrect);
+		gameController.AnswerButtonClicked(answerData._isCorrect);
 	}
 }
