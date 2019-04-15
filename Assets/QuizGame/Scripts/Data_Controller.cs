@@ -4,19 +4,23 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using System;
+using System.Linq;
 
 public class Data_Controller : MonoBehaviour 
 {
     public static Data_Controller instance;
 
+    [Header("Set in Inspector")]
+    public GameObject           networkErrorWindow;
+
     [Header("Set in Editor")]
-	public Round_Data[] allRoundData;
-    public TriviaCategories rawTriviaCategories;
-    public List<string> listOfCategories;
+	public Round_Data[]         allRoundData;
+    public TriviaCategories     rawTriviaCategories;
+    public List<string>         listOfCategories;
+    System.Random               rnd = new System.Random();
 	
 	void Start ()  
-	{
-
+	{        
         if (instance == null) {
 
             DontDestroyOnLoad(gameObject);
@@ -27,7 +31,7 @@ public class Data_Controller : MonoBehaviour
             OnResponseReceived_Castom += HandleOnResponseReceived_Castom;
             OnResponseReceived_DicOfCategories += HandleOnResponseReceived_DicOfCategories;
 
-            StartCoroutine(LoadFromServer("https://opentdb.com/api_category.php", OnResponseReceived_DicOfCategories));            
+            StartCoroutine(LoadFromServer("https://opentdb.com/api_category.php", OnResponseReceived_DicOfCategories));
 
             //SceneManager.LoadScene("MenuScene");
         } else {
@@ -47,6 +51,7 @@ public class Data_Controller : MonoBehaviour
         yield return request.SendWebRequest();
 
         if (request.isNetworkError || request.isHttpError) {
+            networkErrorWindow.SetActive(true);            
             Debug.LogError(request.error);
         } else {
             response(request.downloadHandler.text);
@@ -54,9 +59,7 @@ public class Data_Controller : MonoBehaviour
 
         request.Dispose();
     }
-
-
-
+    
 
     public Action<string> OnResponseReceived_Random;
     private void HandleOnResponseReceived_Random(string response) {
@@ -95,7 +98,7 @@ public class Data_Controller : MonoBehaviour
         int k = 0;
         foreach (var result in fetchedData.results) {
 
-            // m - number of answers
+            // (m+1) - number of answers
             int m = 0;
             foreach (var ans in result.incorrect_answers) {
                 m++;
@@ -117,6 +120,30 @@ public class Data_Controller : MonoBehaviour
             qajPlus1._answerText = result.correct_answer;
             qajPlus1._isCorrect = true;
             question._answers[j] = qajPlus1;
+
+            /*
+            //Debug.Log("QUESTION № " + roundData._questions.Length+1);
+            Debug.Log("BEFORE ORDER BY");
+            Debug.Log("====================" + "\n");
+            for (int i = 0; i < question._answers.Length; i++) {
+                Debug.Log(i + " : " + question._answers[i]._answerText + " - " + question._answers[i]._isCorrect + "\n");
+            }
+            Debug.Log("====================" + "\n");
+             */
+         
+
+            // Answer_Data[] answersWithRandomPos
+            question._answers = question._answers.OrderBy(x => rnd.Next()).ToArray();
+
+            /*
+            Debug.Log("AFTER ORDER BY");
+            Debug.Log("====================" + "\n");
+            for (int i = 0; i < question._answers.Length; i++) {
+                Debug.Log(i + " : " + question._answers[i]._answerText + " - " + question._answers[i]._isCorrect + "\n");
+            }
+            Debug.Log("====================" + "\n");
+             */
+
 
             // QuestionData = questionText + answers[]
             roundData._questions[k] = question;
@@ -191,10 +218,7 @@ public class Data_Controller : MonoBehaviour
                 break;
             case 1:
                 StartCoroutine(Menu_Controller.instance.DatabaseError());
-                return;
-            case 2:
-
-                return;
+                return;            
         }
 
         var roundData = new Round_Data();
@@ -202,9 +226,6 @@ public class Data_Controller : MonoBehaviour
         roundData._pointsAddedForCorrectAnswer = 10;
         roundData._timeLimitInSeconds = Menu_Controller.instance.timeLimit;
         roundData._questions = new Question_Data[Menu_Controller.instance.urlNumberOfQuestions];
-
-        //var question = new Question_Data();
-        //var answer = new Answer_Data();        
 
         int k = 0;
         foreach (var result in fetchedData.results) {
@@ -216,15 +237,7 @@ public class Data_Controller : MonoBehaviour
             }
 
             // questionText and answers[] initialization
-            var question = new Question_Data(result.category, result.type, result.difficulty, result.question, m + 1);
-
-            /*
-            // questionText
-            question._questionText = result.question;                        
-            
-            // answers[] initialization
-            question._answers = new Answer_Data[m+1];
-             */
+            var question = new Question_Data(result.category, result.type, result.difficulty, result.question, m + 1);           
 
             // answers[] filling
             int j = 0;
@@ -240,11 +253,33 @@ public class Data_Controller : MonoBehaviour
             qajPlus1._isCorrect = true;
             question._answers[j] = qajPlus1;
 
+            /*
+            //Debug.Log("QUESTION № " + roundData._questions.Length+1);
+            Debug.Log("BEFORE ORDER BY");
+            Debug.Log("====================" + "\n");
+            for (int i = 0; i < question._answers.Length; i++) {
+                Debug.Log(i + " : " + question._answers[i]._answerText + " - " + question._answers[i]._isCorrect + "\n");
+            }
+            Debug.Log("====================" + "\n");
+             */
+
+
+            // Answer_Data[] answersWithRandomPos
+            question._answers = question._answers.OrderBy(x => rnd.Next()).ToArray();
+
+
+            /*
+            Debug.Log("AFTER ORDER BY");
+            Debug.Log("====================" + "\n");
+            for (int i = 0; i < question._answers.Length; i++) {
+                Debug.Log(i + " : " + question._answers[i]._answerText + " - " + question._answers[i]._isCorrect + "\n");
+            }
+            Debug.Log("====================" + "\n");
+             */
+
             // QuestionData = questionText + answers[]
             roundData._questions[k] = question;
             k++;
-
-            //question = new Question_Data();
         }
 
         allRoundData[0] = roundData;

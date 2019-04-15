@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UI.Collections;
+using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,10 +15,13 @@ public class Menu_Controller : MonoBehaviour
     public GameObject               timeLimitInputFieldObject;
     public GameObject               categoryDropdownObject;
     public GameObject               difficultyDropdownObject;
-    public GameObject               typeOfQuestionsDropdownObject;    
+    public GameObject               typeOfQuestionsDropdownObject;
+    public GameObject               encodingDropdownObject;
 
     public GameObject               databaseErrorWindow;
-    public GameObject               integerErrorWindow;
+    public GameObject               numberOfQuestionsInputErrorWindow;
+    public GameObject               timeLimitInputErrorWindow;
+    //public GameObject               networkErrorWindow;
 
     public GameObject               customDisplay;
 
@@ -26,11 +30,13 @@ public class Menu_Controller : MonoBehaviour
     public string                   urlCategory;
     public string                   urlDifficulty;
     public string                   urlTypeOfQuestions;
+    //public string                   urlEncoding;
     public int                      timeLimit;    
 
     public Dropdown                 categoryDropdown;
     Dropdown                        difficultyDropdown;
     Dropdown                        typeOfQuestionsDropdown;
+    //Dropdown                        encodingDropdown;
     Data_Controller                 dataController;
 
     public void Start() {
@@ -40,11 +46,13 @@ public class Menu_Controller : MonoBehaviour
 
         categoryDropdown = categoryDropdownObject.GetComponent<Dropdown>();
         difficultyDropdown = difficultyDropdownObject.GetComponent<Dropdown>();
-        typeOfQuestionsDropdown = typeOfQuestionsDropdownObject.GetComponent<Dropdown>();        
+        typeOfQuestionsDropdown = typeOfQuestionsDropdownObject.GetComponent<Dropdown>();
+        //encodingDropdown = encodingDropdownObject.GetComponent<Dropdown>();        
 
         CategoriesAssignment();
         DifficultyAssignment();
         TypeAssignment();
+        //EncodingAssignment();
     }
 
     void TypeAssignment() {
@@ -84,12 +92,47 @@ public class Menu_Controller : MonoBehaviour
         }
     }
 
+    /*
+    void EncodingAssignment() {
+
+        List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
+        options = encodingDropdown.options;
+
+        options.Clear();
+        options.Add(new Dropdown.OptionData("Default Encoding"));
+        options.Add(new Dropdown.OptionData("Legacy URL Encoding"));
+        options.Add(new Dropdown.OptionData("URL Encoding (RFC 3986)"));
+        options.Add(new Dropdown.OptionData("Base64 Encoding"));
+    }
+     */
+
 	public void StartGame()
 	{        
 		UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
 	}
 
     public void RandomQuiz() {
+        /*
+        string chosenEncoding;
+
+        chosenEncoding = encodingDropdown.captionText.text;
+
+        switch (chosenEncoding) {
+            case "Default Encoding":
+                urlEncoding = "";
+                break;
+            case "Legacy URL Encoding":
+                urlEncoding = "&encode=urlLegacy";
+                break;
+            case "URL Encoding (RFC 3986)":
+                urlEncoding = "&encode=url3986";
+                break;
+            case "Base64 Encoding":
+                urlEncoding = "&encode=base64";
+                break;
+        }
+         */
+
         urlNumberOfQuestions = UnityEngine.Random.Range(10,31);
         timeLimit = urlNumberOfQuestions * 5;
 
@@ -100,6 +143,28 @@ public class Menu_Controller : MonoBehaviour
     }
 
     public void StartCustomQuizButton() {
+        /*
+        //////////////////////encodingDropdown///////////////
+        string chosenEncoding;
+
+        chosenEncoding = encodingDropdown.captionText.text;
+
+        switch (chosenEncoding) {
+            case "Default Encoding":
+                urlEncoding = "";
+                break;
+            case "Legacy URL Encoding":
+                urlEncoding = "&encode=urlLegacy";
+                break;
+            case "URL Encoding (RFC 3986)":
+                urlEncoding = "&encode=url3986";
+                break;
+            case "Base64 Encoding":
+                urlEncoding = "&encode=base64";
+                break;
+        }
+        /////////////////////////////////////////////////////
+         */
         
         //////////////////////categoryDropdown///////////////
         string chosenCategory;
@@ -129,13 +194,13 @@ public class Menu_Controller : MonoBehaviour
                 urlDifficulty = "";
                 break;
             case "Easy":
-                urlTypeOfQuestions = "&difficulty=easy";
+                urlDifficulty = "&difficulty=easy";
                 break;
             case "Medium":
-                urlTypeOfQuestions = "&difficulty=medium";
+                urlDifficulty = "&difficulty=medium";
                 break;
             case "Hard":
-                urlTypeOfQuestions = "&difficulty=hard";
+                urlDifficulty = "&difficulty=hard";
                 break;
         }
         /////////////////////////////////////////////////////
@@ -161,22 +226,47 @@ public class Menu_Controller : MonoBehaviour
 
 
         /////////////////////NumberOfQuestions/////////////////
-        string chosenNumberOfQuestions;
 
-        chosenNumberOfQuestions = numberOfQuestionsInputFieldObject.GetComponent<InputField>().text;
-
-        if (chosenNumberOfQuestions == "Random (10, 50)") {
+        // if placeholder IsActive "Random(1, 50)"
+        if (numberOfQuestionsInputFieldObject.GetComponent<InputField>().placeholder.GetComponent<Text>().IsActive()) {
             urlNumberOfQuestions = UnityEngine.Random.Range(10, 51);
         } else {
-            if (!Int32.TryParse(chosenNumberOfQuestions, out urlNumberOfQuestions)) {
-                StartCoroutine(IntegerError());
-            }
+            string chosenNumberOfQuestions;
+
+            chosenNumberOfQuestions = numberOfQuestionsInputFieldObject.GetComponent<InputField>().text;
+
+            // if "chosenNumberOfQuestions" IS NOT integer OR not in the range [1;50]
+            // then show IntegerErrorWindow
+            if ((!Int32.TryParse(chosenNumberOfQuestions, out urlNumberOfQuestions)) || (urlNumberOfQuestions <= 0) || (urlNumberOfQuestions > 50)) {
+                StartCoroutine(NumberOfQuestionsInputError());
+                return;
+            } 
+
+            // else assign "urlNumberOfQuestions = chosenNumberOfQuestions"
         }
         /////////////////////////////////////////////////////
 
-        
+        ///////////////////////TimeLimit/////////////////////
 
-        timeLimit = urlNumberOfQuestions * 5;
+        // if placeholder IsActive "1ques.=5sec."
+        if (timeLimitInputFieldObject.GetComponent<InputField>().placeholder.GetComponent<Text>().IsActive()) {
+            timeLimit = urlNumberOfQuestions * 5;
+        } else {
+            string chosenTimeLimit;
+
+            chosenTimeLimit = timeLimitInputFieldObject.GetComponent<InputField>().text;
+
+            // if "chosenTimeLimit" IS NOT integer OR "timeLimit <= 0"
+            // then show IntegerErrorWindow
+            if ((!Int32.TryParse(chosenTimeLimit, out timeLimit)) || (timeLimit <= 0)) {
+                StartCoroutine(TimeLimitInputError());
+                return;
+            }
+
+            // else assign "timeLimit = chosenTimeLimit"        
+        }
+
+        /////////////////////////////////////////////////////
 
         string url = "https://opentdb.com/api.php?amount=";
         url = url + urlNumberOfQuestions.ToString() + urlCategory + urlDifficulty + urlTypeOfQuestions;
@@ -190,10 +280,16 @@ public class Menu_Controller : MonoBehaviour
         databaseErrorWindow.SetActive(false);
     }
 
-    public IEnumerator IntegerError() {
-        integerErrorWindow.SetActive(true);
+    public IEnumerator NumberOfQuestionsInputError() {
+        numberOfQuestionsInputErrorWindow.SetActive(true);
         yield return new WaitForSecondsRealtime(4);
-        integerErrorWindow.SetActive(false);
+        numberOfQuestionsInputErrorWindow.SetActive(false);
+    }
+
+    public IEnumerator TimeLimitInputError() {
+            timeLimitInputErrorWindow.SetActive(true);
+            yield return new WaitForSecondsRealtime(4);
+            timeLimitInputErrorWindow.SetActive(false);
     }
 
     public void CustomQuizButton() {
@@ -202,6 +298,15 @@ public class Menu_Controller : MonoBehaviour
 
     public void BackButton() {
         customDisplay.SetActive(false);
+    }
+
+    public void RefreshButton() {
+        Destroy(Data_Controller.instance.gameObject);
+        SceneManager.LoadScene("PersistentScene");
+    }
+
+    public void BackToMenuButton() {
+        SceneManager.LoadScene("MenuScene");
     }
 
     public void TestButton() {

@@ -1,6 +1,9 @@
-﻿[System.Serializable]
+﻿using System;
+using System.Collections;
+
+[System.Serializable]
 public class Answer_Data
-{
+{   
 	public string _answerText;
 	public bool _isCorrect;
 
