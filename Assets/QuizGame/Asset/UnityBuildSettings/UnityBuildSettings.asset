@@ -1,0 +1,148 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d5886119a5c7b34d8872ab527ca3e1b, type: 3}
+  m_Name: UnityBuildSettings
+  m_EditorClassIdentifier: 
+  _basicSettings:
+    baseBuildFolder: bin
+    buildPath: $BUILD/$PLATFORM
+    openFolderPostBuild: 0
+  _productParameters:
+    buildCounter: 1
+    lastGeneratedVersion: 1.0.1567.3676
+    version: 1.0.$DAYSSINCE("January 1, 2015").$SECONDS
+    autoGenerate: 1
+  _releaseTypeList:
+    releaseTypes:
+    - typeName: NewReleaseType
+      bundleIndentifier: com.P$0ne&&BubbleGun.QuizGame
+      companyName: P$0ne&&BubbleGun
+      productName: QuizGame
+      developmentBuild: 0
+      allowDebugging: 0
+      enableHeadlessMode: 0
+      customDefines: 
+      sceneList:
+        enabledScenes:
+        - fileGUID: 2cda990e2423bbf4892e6590ba056729
+        - fileGUID: 4237147338e8b1c41bc2dbb39f34bc41
+        - fileGUID: 3565fc22f1a5a5846bd7877b78b46236
+  _platformList:
+    platforms:
+    - enabled: 1
+      distributionList:
+        distributions: []
+      architectures:
+      - target: 13
+        name: Android
+        enabled: 1
+      variants:
+      - variantName: Device Type
+        selectedIndex: 0
+        values:
+        - FAT
+        - ARMv7
+        - x86
+      - variantName: Texture Compression
+        selectedIndex: 0
+        values:
+        - ETC
+        - ETC2
+        - ASTC
+        - DXT
+        - PVRTC
+        - ATC
+        - Generic
+      - variantName: Build System
+        selectedIndex: 0
+        values:
+        - Internal
+        - Gradle
+        - ADT (Legacy)
+      platformName: Android
+      binaryNameFormat: '{0}.apk'
+      dataDirNameFormat: '{0}_Data'
+      targetGroup: 7
+    - enabled: 1
+      distributionList:
+        distributions: []
+      architectures:
+      - target: 5
+        name: Windows x86
+        enabled: 0
+      - target: 19
+        name: Windows x64
+        enabled: 1
+      variants: []
+      platformName: PC
+      binaryNameFormat: '{0}.exe'
+      dataDirNameFormat: '{0}_Data'
+      targetGroup: 1
+    - enabled: 1
+      distributionList:
+        distributions: []
+      architectures:
+      - target: 20
+        name: WebGL
+        enabled: 1
+      variants: []
+      platformName: WebGL
+      binaryNameFormat: '{0}'
+      dataDirNameFormat: '{0}_Data'
+      targetGroup: 13
+  _projectConfigurations:
+    configSet:
+      _Buckets: 0300000000000000ffffffffffffffff060000000500000004000000
+      _HashCodes: d85dc3118190dc396b7956058130fc1dd565ea5acb0504674156fa6e
+      _Next: ffffffffffffffff01000000ffffffffffffffff02000000ffffffff
+      _Count: 7
+      _Version: 7
+      _FreeList: -1
+      _FreeCount: 0
+      _Keys:
+      - NewReleaseType/Android/Android (FAT,ETC,Internal)
+      - NewReleaseType/Android
+      - NewReleaseType/PC/Windows x64
+      - NewReleaseType/PC
+      - NewReleaseType/WebGL/WebGL
+      - NewReleaseType/WebGL
+      - NewReleaseType
+      _Values:
+      - enabled: 1
+        childKeys: []
+      - enabled: 1
+        childKeys:
+        - NewReleaseType/Android/Android (FAT,ETC,Internal)
+      - enabled: 1
+        childKeys: []
+      - enabled: 1
+        childKeys:
+        - NewReleaseType/PC/Windows x64
+      - enabled: 1
+        childKeys: []
+      - enabled: 1
+        childKeys:
+        - NewReleaseType/WebGL/WebGL
+      - enabled: 1
+        childKeys:
+        - NewReleaseType/Android
+        - NewReleaseType/PC
+        - NewReleaseType/WebGL
+    showViewOptions: 0
+    showConfigs: 0
+    showBuildInfo: 0
+    hideDisabled: 0
+    treeView: 0
+    selectedKeyChain: NewReleaseType/Android/Android (FAT,ETC,Internal)
+  _preBuildActions:
+    buildActions: []
+  _postBuildActions:
+    buildActions: []
