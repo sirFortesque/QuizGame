@@ -1,4 +1,4 @@
-  This game is playable implementation of the  Open Trivia Database (https://opentdb.com/) - free to use, user-contributed trivia question database with 3,268 verified questions and 2,865 pending at the moment of writing.
+  This game made with Unity3D and represents playable implementation of the  Open Trivia Database (https://opentdb.com/) - free to use, user-contributed trivia question database with 3,268 verified questions and 2,865 pending at the moment of writing.
 
   Play Random game or Customize your Quiz any way you like with different number of qustions or round's time limit and any difficulty or questions type!
 
